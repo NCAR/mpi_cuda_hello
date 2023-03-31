@@ -2,7 +2,7 @@
 #PBS -A SCSG0001
 #PBS -q main
 #PBS -l select=2:ncpus=64:mpiprocs=4:ngpus=4
-#PBS -N gpuck
+#PBS -N mpi_cuda_hw
 #PBS -j oe
 #PBS -l walltime=01:10:00
 

@@ -1,2 +1,4 @@
 *.o
 *.out
+hello
+mpi_cuda_hw.o*
