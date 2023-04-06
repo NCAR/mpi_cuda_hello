@@ -12,6 +12,7 @@
  */
 #include <iostream>
 #include <mpi.h>
+#include <cstring>
 #include "gpu_driver.h"
 #include "sizedefs.h"
 
@@ -66,6 +67,14 @@ int main(int argc, char **argv)
    // print data after kernel call
    if (comm_rank == 0) std::cout << "----- ----- -----" << std::endl;
    if (comm_rank == 0) std::cout << " Message after GPU computation: " << output << std::endl;
+   if (comm_rank == 0) std::cout << "----- ----- -----" << std::endl;
+   if (comm_rank == 0){
+      if (strcmp(output,"Hello World!")==0){
+         std::cout << " TEST SUCCESSFUL " << std::endl;
+      } else {
+         std::cout << " TEST FAILED " << std::endl;
+      }
+   }
    if (comm_rank == 0) std::cout << "----- ----- -----" << std::endl;
 
    // clean up and exit
