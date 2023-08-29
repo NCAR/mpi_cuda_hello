@@ -11,8 +11,10 @@
  * ---------------------------------------------------
  */
 #include <iostream>
-#include <mpi.h>
+#include <string>
 #include <cstring>
+#include <sched.h>
+#include <mpi.h>
 #include "gpu_driver.h"
 #include "sizedefs.h"
 
@@ -20,11 +22,13 @@ int main(int argc, char **argv)
 {
    MPI_Comm comm = MPI_COMM_WORLD;
    int comm_rank, comm_size;
-   int rval;         // to store unchecked return codes
-   char *data;       // input data array
-   char *output;     // output data array
-   int *dev_ids;     // GPU device ids for each rank
-   char *hostnames;  // host names for eack rank
+   int rval;             // to store unchecked return codes
+   char *data;           // input data array
+   char *output;         // output data array
+   int *dev_ids;         // GPU device ids for each rank
+   char *dev_uuids;      // GPU device uuids for each rank
+   char *hostnames;      // host names for eack rank
+   int *cpu_ids;         // CPU device for each rank
 
    // allocate and initialize input
    data = new char [SIZE];
@@ -45,7 +49,9 @@ int main(int argc, char **argv)
   
    // allocate storage for device ids and host names
    dev_ids = new int [comm_size];
-   hostnames = new char [comm_size*HN_SIZE];
+   dev_uuids = new char [comm_size*UUID_LEN];
+   hostnames = new char [comm_size*HN_LEN];
+   cpu_ids = new int [comm_size];
 
    // print comm info
    if (comm_rank == 0) std::cout << "----- ----- -----" << std::endl;
@@ -56,12 +62,13 @@ int main(int argc, char **argv)
    if (comm_rank == 0) std::cout << "Message before GPU computation: " << output << std::endl;
 
    // main computation
-   rval = gpu_driver(data, 4, comm_rank, comm_size, comm, dev_ids, hostnames, output);
+   rval = gpu_driver(data, 4, comm_rank, comm_size, comm, dev_ids, dev_uuids, hostnames, cpu_ids, output);
 
    // print host + GPU info
    if (comm_rank == 0) std::cout << "----- ----- -----" << std::endl;
    for (int i=0; i<comm_size; i++){
-      if (comm_rank==0) std::cout << "rank " << i << " on host " << &hostnames[HN_SIZE*i] << ", GPU " << dev_ids[i] << std::endl;
+      if (comm_rank==0) std::cout << "rank " << i << " on host " << &hostnames[HN_LEN*i] << ", CPU: " << cpu_ids[i] 
+                                  << ", GPU: " << dev_ids[i] << ", UUID: " << &dev_uuids[UUID_LEN*i] << std::endl;
    }
 
    // print data after kernel call

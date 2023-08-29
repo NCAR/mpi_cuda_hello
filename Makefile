@@ -1,6 +1,11 @@
 # For Gust
 # module purge
 # module load ncarenv/23.03 craype/2.7.20 nvhpc/23.1 cuda/11.7.1 cray-mpich/8.1.25 ncarcompilers/0.8.0
+#---
+# For Derecho
+# module --force purge
+# module load ncarenv/23.04 craype/2.7.20 nvhpc/23.1 cuda/11.7.1 cray-mpich/8.1.25 ncarcompilers/0.8.0
+#---
 NVCC      = nvcc
 MPICC     = mpicxx
 MPIINCDIR = /opt/cray/pe/mpich/8.1.25/ofi/nvidia/20.7/include
